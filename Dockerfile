@@ -47,7 +47,8 @@ RUN pnpm ui:build
 RUN ollama serve & sleep 5 && ollama pull qwen2.5:1.5b && pkill ollama || true
 
 # Hugging Face Spaces runs as user 1000
-RUN useradd -m -u 1000 user && chown -R user /app
+# node:22-bookworm already has UID 1000 (node user), so rename it to "user"
+RUN usermod -l user -d /home/user -m node && chown -R user /app
 
 # Ensure Ollama models and app data are accessible by the user
 RUN mkdir -p /home/user/.ollama /home/user/clawd && chown -R user /home/user
