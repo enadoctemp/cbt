@@ -23,6 +23,11 @@ RUN corepack enable
 
 WORKDIR /app
 
+# Clone openclaw source into the working directory
+RUN git clone https://github.com/openclaw/openclaw.git .tmp_repo \
+    && cp -r .tmp_repo/. . \
+    && rm -rf .tmp_repo
+
 # Copy package manifests first to leverage Docker cache
 COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml* ./
 
