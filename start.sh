@@ -7,7 +7,7 @@ cp /app/clawdbot.json ~/.clawdbot/clawdbot.json
 
 # If TELEGRAM_BOT_TOKEN is set in HF Secrets, update the config
 if [ ! -z "$TELEGRAM_BOT_TOKEN" ]; then
-    sed -i "s/\"botToken\": \"TELEGRAM_BOT_TOKEN\"/\"botToken\": \"$TELEGRAM_BOT_TOKEN\"/" ~/.clawdbot/clawdbot.json
+    sed -i "s|\"botToken\": \"TELEGRAM_BOT_TOKEN\"|\"botToken\": \"$TELEGRAM_BOT_TOKEN\"|" ~/.clawdbot/clawdbot.json
 fi
 
 # Start Ollama in the background

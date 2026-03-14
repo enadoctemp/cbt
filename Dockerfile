@@ -23,9 +23,10 @@ RUN corepack enable
 WORKDIR /app
 
 # Copy package manifests first to leverage Docker cache
+# We use wildcards so that the build doesn't fail if some files are missing
 COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml* ./
 # Also copy ui package manifest if it exists
-COPY ui/package.json ./ui/ 2>/dev/null || true
+COPY ui/package.jso[n] ./ui/
 
 # Install dependencies
 RUN pnpm install
