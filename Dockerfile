@@ -23,20 +23,24 @@ RUN corepack enable
 WORKDIR /app
 
 # Copy package manifests first to leverage Docker cache
-# We use wildcards so that the build doesn't fail if some files are missing
 COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml* ./
+
 # Also copy ui package manifest if it exists
 COPY ui/package.jso[n] ./ui/
 
-# Install dependencies
+# Install root dependencies
 RUN pnpm install
 
 # Copy the rest of the application
 COPY . .
 
+# Install UI dependencies BEFORE building
+RUN pnpm ui:install
+
 # Build the application
 RUN pnpm build
-RUN pnpm ui:install
+
+# Build the UI
 RUN pnpm ui:build
 
 # Pre-pull the model during build to make the space start faster
@@ -44,6 +48,7 @@ RUN ollama serve & sleep 5 && ollama pull qwen2.5:1.5b && pkill ollama || true
 
 # Hugging Face Spaces runs as user 1000
 RUN useradd -m -u 1000 user && chown -R user /app
+
 # Ensure Ollama models and application data are accessible by the user
 RUN mkdir -p /home/user/.ollama /home/user/clawd && chown -R user /home/user
 
@@ -53,6 +58,7 @@ RUN chown -R user /root/.ollama 2>/dev/null || true; \
     chown -R user /home/user/.ollama 2>/dev/null || true
 
 USER user
+
 ENV HOME=/home/user
 ENV OLLAMA_MODELS=/home/user/.ollama/models
 ENV NODE_ENV=production
