@@ -28,16 +28,10 @@ RUN git clone https://github.com/openclaw/openclaw.git .tmp_repo \
     && cp -r .tmp_repo/. . \
     && rm -rf .tmp_repo
 
-# Copy package manifests first to leverage Docker cache
-COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml* ./
-
-# Copy ui package manifest if it exists
-COPY ui/package.jso[n] ./ui/
-
-# Install root dependencies
+# Install root dependencies (package.json already present from git clone)
 RUN pnpm install
 
-# Copy the rest of the application
+# Copy your config files on top (overrides cloned defaults)
 COPY . .
 
 # Install UI dependencies BEFORE building
