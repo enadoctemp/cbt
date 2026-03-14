@@ -1,5 +1,12 @@
 .git
+.github
 node_modules
+ui/node_modules
 dist
+ui/dist
 .pnpm-store
 .cache
+*.log
+*.md
+.env
+.env.*
